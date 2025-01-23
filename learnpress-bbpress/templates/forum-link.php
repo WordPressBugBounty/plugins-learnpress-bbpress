@@ -23,7 +23,7 @@ if ( ! isset( $forum_id ) ) {
 	if ( $lpbb_post_status == 'publish' ) {
 		?>
 		<a class="learn-press-course-forum-link"
-		   href="<?php echo get_permalink( $forum_id ); ?>"><?php echo get_the_title( $forum_id ); ?></a>
+			href="<?php echo get_permalink( $forum_id ); ?>"><?php echo get_the_title( $forum_id ); ?></a>
 		<?php
 	} else {
 		?>

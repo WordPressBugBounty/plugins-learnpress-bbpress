@@ -1,90 +1,123 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Copyright (C) 2025 ThimPress
+# This file is distributed under the same license as the LearnPress - bbPress Integration plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-28 13:48+0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: LearnPress - bbPress Integration 4.0.5\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress-bbpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-01-23T13:04:56+03:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: learnpress-bbpress\n"
 
-#: learnpress-bbpress.php:51
-#, php-format
-msgid ""
-"<strong>%s</strong> addon version %s requires %s version %s or higher is "
-"<strong>installed</strong> and <strong>activated</strong>."
+#. Plugin Name of the plugin
+msgid "LearnPress - bbPress Integration"
 msgstr ""
 
-#: learnpress-bbpress.php:52
-msgid "LearnPress bbPress"
+#. Plugin URI of the plugin
+msgid "http://thimpress.com/learnpress"
 msgstr ""
 
-#: learnpress-bbpress.php:54
-msgid "LearnPress"
+#. Description of the plugin
+msgid "Using the forum for courses provided by bbPress."
 msgstr ""
 
-#: inc/functions.php:50
-msgid "Instructor"
+#. Author of the plugin
+msgid "ThimPress"
 msgstr ""
 
-#: inc/load.php:97
+#. Author URI of the plugin
+msgid "http://thimpress.com"
+msgstr ""
+
+#: inc/Elementor/config/singlecourseforum.php:12
+msgid "Header Forum"
+msgstr ""
+
+#: inc/Elementor/config/singlecourseforum.php:21
+msgid "Title Forum"
+msgstr ""
+
+#: inc/Elementor/config/singlecourseforum.php:30
+msgid "Author"
+msgstr ""
+
+#: inc/Elementor/config/singlecourseforum.php:35
+msgid "Border Radius"
+msgstr ""
+
+#: inc/Elementor/config/singlecourseforum.php:49
+msgid "Description Forum"
+msgstr ""
+
+#: inc/Elementor/config/singlecourseforum.php:58
+msgid "Forum Button"
+msgstr ""
+
+#: inc/Elementor/Widgets/BbpressSingleCourseForumElementor.php:19
+msgid "Bbpress Course Forum"
+msgstr ""
+
+#: inc/load.php:114
 msgid "Create New"
 msgstr ""
 
-#: inc/load.php:115
-msgid "Forum"
-msgstr ""
-
-#: inc/load.php:121
+#: inc/load.php:129
 msgid "Enable"
 msgstr ""
 
-#: inc/load.php:124
+#: inc/load.php:130
 msgid "Enable bbPress forum for this course."
 msgstr ""
 
-#: inc/load.php:128
+#: inc/load.php:134
 msgid "Course Forum"
 msgstr ""
 
-#: inc/load.php:131
-msgid ""
-"Select forum of this course, choose Create New to create new forum for "
-"course, uncheck Enable option to disable."
+#: inc/load.php:135
+msgid "Select forum of this course, choose Create New to create new forum for course, uncheck Enable option to disable."
 msgstr ""
 
-#: inc/load.php:145
+#: inc/load.php:144
 msgid "Restrict User"
 msgstr ""
 
-#: inc/load.php:148
+#: inc/load.php:145
 msgid "Only user(s) enrolled course can access this forum."
 msgstr ""
 
-#: inc/load.php:396
+#: inc/load.php:387
 msgid "You have to enroll the respective course!"
 msgstr ""
 
-#: inc/load.php:398
+#: inc/load.php:390
 msgid "Go back to "
 msgstr ""
 
-#: inc/load.php:429
-#, php-format
-msgid ""
-"<strong>bbPress</strong> addon for <strong>LearnPress</strong> requires %s "
-"plugin is <strong>installed</strong> and <strong>activated</strong>."
+#: inc/LPbbPressTemplate.php:72
+msgid "last updated "
 msgstr ""
 
-#: templates/forum-link.php:16
+#: inc/LPbbPressTemplate.php:84
+msgid "Created by "
+msgstr ""
+
+#: inc/LPbbPressTemplate.php:113
+msgid "Join Forum"
+msgstr ""
+
+#: inc/LPbbPressTemplate.php:124
+msgid "Forum"
+msgstr ""
+
+#: learnpress-bbpress.php:127
+msgid "<strong>BBPress</strong> addon for <strong>LearnPress</strong> requires %s version %s is <strong>activated</strong>."
+msgstr ""
+
+#: templates/forum-link.php:20
 msgid "Course Forum:"
 msgstr ""

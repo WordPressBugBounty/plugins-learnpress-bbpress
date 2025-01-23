@@ -36,16 +36,9 @@ if ( ! function_exists( 'learn_press_bbp_get_course' ) ) {
 				$forum_id
 			);
 
-			return $course_id = $wpdb->get_var( $query );
+			return $wpdb->get_var( $query );
 		}
 
 		return false;
 	}
 }
-
-/*
-function learn_press_bbp_get_user_role($role, $user_id, $user){
-	return 'lp_teacher';
-}
-
-add_filter('bbp_get_user_role', 'learn_press_bbp_get_user_role', 10, 3);*/

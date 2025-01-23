@@ -4,12 +4,12 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: Using the forum for courses provided by bbPress.
  * Author: ThimPress
- * Version: 4.0.4
+ * Version: 4.0.5
  * Author URI: http://thimpress.com
  * Tags: learnpress, lms, add-on, bbpress
  * Text Domain: learnpress-bbpress
  * Domain Path: /languages/
- * Require_LP_Version: 4.2.6
+ * Require_LP_Version: 4.2.7
  * Require_BBpress_Version: 2.0.0
  *
  * @package LearnPress-bbPress-Integration
@@ -20,16 +20,20 @@ defined( 'ABSPATH' ) || exit;
 const LP_ADDON_BBPRESS_FILE = __FILE__;
 
 /**
- * Class LP_Addon_bbPress_Preload
+ * Class LP_Addon_BbPress_Preload
  */
-class LP_Addon_bbPress_Preload {
+class LP_Addon_BbPress_Preload {
 	/**
 	 * @var array|string[]
 	 */
 	public static $addon_info = array();
+	/**
+	 * @var LP_Addon_bbPress $addon
+	 */
+	public static $addon;
 
 	/**
-	 * LP_Addon_bbPress_Preload constructor.
+	 * LP_Addon_BbPress_Preload constructor.
 	 */
 	public function __construct() {
 		// Set Base name plugin.
@@ -98,7 +102,8 @@ class LP_Addon_bbPress_Preload {
 	 * Load addon
 	 */
 	public function load() {
-		LP_Addon::load( 'LP_Addon_bbPress', 'inc/load.php', __FILE__ );
+		include_once 'inc/load.php';
+		self::$addon = LP_Addon_bbPress::instance();
 	}
 
 	public function show_note_errors_require_lp() {
@@ -116,24 +121,32 @@ class LP_Addon_bbPress_Preload {
 		?>
 		<div class="notice notice-error">
 			<p>
-				<?php echo wp_kses(
+				<?php
+				echo wp_kses(
 					sprintf(
-						__( '<strong>BBPress</strong> addon for <strong>LearnPress</strong> requires %s version %s is <strong>activated</strong>.',
-							'learnpress-bbpress' ),
-						sprintf( '<a href="%s" target="_blank">bbPress</a>',
-							admin_url( 'plugin-install.php?tab=search&type=term&s=bbpress' ) ),
+						__(
+							'<strong>BBPress</strong> addon for <strong>LearnPress</strong> requires %s version %s is <strong>activated</strong>.',
+							'learnpress-bbpress'
+						),
+						sprintf(
+							'<a href="%s" target="_blank">bbPress</a>',
+							admin_url( 'plugin-install.php?tab=search&type=term&s=bbpress' )
+						),
 						self::$addon_info['Require_BBpress_Version']
-					), array(
+					),
+					array(
 						'a'      => array(
 							'href'   => array(),
 							'target' => array(),
 						),
-						'strong' => array()
+						'strong' => array(),
 					)
-				); ?>
+				);
+				?>
 			</p>
 		</div>
-	<?php }
+		<?php
+	}
 }
 
-new LP_Addon_bbPress_Preload();
+new LP_Addon_BbPress_Preload();

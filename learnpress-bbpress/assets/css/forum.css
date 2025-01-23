@@ -1,0 +1,61 @@
+.lp-bbpress-forum-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: flex-start;
+    margin: 20px 0;
+}
+.lp-bbpress-forum-wrapper .lp-bbpress-forum-header{
+    margin: 0;
+    font-size: 26px;
+    line-height: 1.25;
+    color: #1C1C1B;
+}
+.lp-bbpress-forum-wrapper .lp-bbpress-forum-title{
+    font-size: 18px;
+    line-height: 1.25;
+    color: #1C1C1B;
+    font-weight: 600;
+    margin: 0;
+}
+.lp-bbpress-forum-author {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+/*    margin-bottom: 1em;*/
+}
+.lp-bbpress-forum-author .author-name {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 0;
+    color: #555555;
+}
+.lp-bbpress-forum-author .author-name a {
+    font-weight: 600;
+    color: #1C1C1B;
+}
+.lp-bbpress-forum-author .forum-details {
+    font-size: 14px;
+    line-height: 1.5;
+}
+.lp-bbpress-forum-author .forum-details .topic {
+    color: #1C1C1B;
+}
+.lp-bbpress-forum-author .forum-details .time-since {
+    color: #949390;
+}
+.lp-bbpress-forum-wrapper .lp-bbpress-forum-description{
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #555555;
+}
+.lp-bbpress-forum-wrapper .lp-bbpress-forum-link.lp-button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid #1C1C1B;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #1C1C1B;
+    font-weight: 600;
+}

@@ -1,22 +1,22 @@
-/* eslint-disable camelcase */
-( function( $ ) {
-	$( document ).ready( function() {
-		var lpbbEnable = $('#_lp_bbpress_forum_enable'),
-			lpbbWrapper = $('.lp_bbpress_course__wrapper');
-
-		if(lpbbWrapper.length){
-
-			lpbbEnable.change(function(){
-				if(lpbbEnable.is(":checked")){
-					lpbbWrapper.removeClass('off');
-					lpbbWrapper.addClass('on')
-				}else{
-					lpbbWrapper.removeClass('on');
-					lpbbWrapper.addClass('off')
-				}
-			});
-
+document.addEventListener('DOMContentLoaded', (e) => {
+	let lpBbpressTabWrapper = document.querySelector('#lp_bbpress_course_data');
+	if ( ! lpBbpressTabWrapper ) {
+		return;
+	}
+	const hideShowBbPressLpSettings = (value) => {
+		const selectForumWraper = document.querySelector( '.form-field._lp_course_forum_field' ),
+		restrictUserWraper = document.querySelector( '.form-field._lp_bbpress_forum_enrolled_user_field ' );
+		if ( value ) {
+			selectForumWraper.style.display = 'flex';
+			restrictUserWraper.style.display = 'flex';
+		} else {
+			selectForumWraper.style.display = 'none';
+			restrictUserWraper.style.display = 'none';
 		}
-	} );
-}( jQuery ) );
-
+	}
+	let enableForumCheckbox = document.querySelector('#_lp_bbpress_forum_enable');
+	hideShowBbPressLpSettings( enableForumCheckbox.checked );
+    enableForumCheckbox.addEventListener('change', function() {
+    	hideShowBbPressLpSettings( this.checked );
+    });
+});

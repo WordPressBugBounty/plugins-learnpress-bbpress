@@ -8,6 +8,10 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+use LearnPress\Models\CourseModel;
+use LearnPress\Models\UserModel;
+use LearnPress\Models\UserItems\UserCourseModel;
+use LP_Addon_bbPress\Elementor\BbpressElementorHandler;
 
 if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 	/**
@@ -16,6 +20,15 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 	 * @since 3.0.0
 	 */
 	class LP_Addon_bbPress extends LP_Addon {
+		public static $instance = null;
+
+		public static function instance() {
+			if ( is_null( self::$instance ) ) {
+				self::$instance = new self();
+			}
+
+			return self::$instance;
+		}
 
 		/**
 		 * @var bool
@@ -38,6 +51,7 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		protected function _define_constants() {
 			define( 'LP_ADDON_BBPRESS_PATH', dirname( LP_ADDON_BBPRESS_FILE ) );
 			define( 'LP_ADDON_BBPRESS_TEMPLATE', LP_ADDON_BBPRESS_PATH . '/templates/' );
+			define( 'LP_ADDON_BBPRESS_URL', plugin_dir_url( LP_ADDON_BBPRESS_FILE ) );
 		}
 
 		/**
@@ -45,6 +59,12 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		 */
 		protected function _includes() {
 			include_once 'functions.php';
+			include_once 'LPbbPressTemplate.php';
+
+			if ( is_plugin_active( 'elementor/elementor.php' ) ) {
+				include_once 'Elementor/BbpressElementorHandler.php';
+				BbpressElementorHandler::instance();
+			}
 		}
 
 		/**
@@ -57,10 +77,30 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 			add_action( 'bbp_template_before_single_forum', array( $this, 'before_single' ) );
 			add_action( 'bbp_template_after_single_topic', array( $this, 'after_single' ) );
 			add_action( 'bbp_template_after_single_forum', array( $this, 'after_single' ) );
-			add_action( 'learn-press/single-course-summary', array( $this, 'forum_link' ), 0 );
+			// add_action( 'learn-press/after-single-course', array( $this, 'forum_link' ), 0 );
+			add_action( 'learn-press/course-content-summary', array( $this, 'forum_link' ), 71 );
 
 			add_filter( 'learnpress/course/metabox/tabs', array( $this, 'add_course_metabox' ), 10, 2 );
 			add_action( 'learnpress/admin/metabox/select/save', array( $this, 'custom_save_metabox_forum' ), 10, 3 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+			add_action( 'learnpress/course-settings/after-course_bbpress', array( $this, 'enqueue_course_settings' ) );
+		}
+
+		public function enqueue_assets() {
+			wp_register_style(
+				'learnpress-bbpress-forum',
+				LP_ADDON_BBPRESS_URL . 'assets/css/forum.css',
+				array(),
+				time()
+			);
+		}
+		public function enqueue_course_settings() {
+			wp_enqueue_script(
+				'bbpress-course-settings',
+				plugins_url( 'assets/js/admin.js', LP_ADDON_BBPRESS_FILE ),
+				array(),
+				time()
+			);
 		}
 
 		public function add_course_metabox( $data, $post_id ) {
@@ -70,26 +110,13 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 				'numberposts' => -1,
 			);
 
-			$options     = array();
-			$options[''] = esc_html__( 'Create New', 'learnpress-bbpress' );
-
-			$forums_posts = get_posts( $args );
-
-			if ( ! empty( $forums_posts ) ) {
-				foreach ( $forums_posts as $forums_post ) {
-					$course_id = learn_press_bbp_get_course( get_the_ID() );
-
-					if ( ! $course_id || $course_id == $post_id || LP_COURSE_CPT == get_post_type() ) {
-						$options[ $forums_post->ID ] = $forums_post->post_title;
-					}
-				}
-			}
-
-			$value_forum = get_post_meta( $post_id, '_lp_course_forum', true );
-
+			$options        = array();
+			$options['']    = esc_html__( 'Create New', 'learnpress-bbpress' );
+			$options        = $this->get_forum_options( $options, absint( $post_id ) );
+			$selected_forum = get_post_meta( $post_id, '_lp_course_forum', true );
 			// Check forum is exists.
-			if ( ! empty( $value_forum ) && ! get_post( absint( $value_forum ) ) ) {
-				$value_forum = '';
+			if ( ! empty( $selected_forum ) && ! get_post( absint( $selected_forum ) ) ) {
+				$selected_forum = '';
 			}
 
 			$data['course_bbpress'] = array(
@@ -109,7 +136,7 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 						'',
 						array(
 							'options'     => $options,
-							'value'       => $value_forum,
+							'value'       => $selected_forum,
 							'custom_save' => true,
 						)
 					),
@@ -189,15 +216,13 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		 * Forum link in single course page.
 		 */
 		public function forum_link() {
-
-			$course = LP_Global::course();
-
-			if ( ! $course ) {
+			$courseModel = CourseModel::find( get_the_ID(), true );
+			if ( ! $courseModel ) {
 				return;
 			}
 
-			$forum_id = get_post_meta( $course->get_id(), '_lp_course_forum', true );
-
+			// $forum_id = get_post_meta( $courseModel->get_id(), '_lp_course_forum', true );
+			$forum_id = $courseModel->get_meta_value_by_key( '_lp_course_forum' );
 			if ( ! $forum_id ) {
 				return;
 			}
@@ -210,16 +235,16 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 				return;
 			}
 
-			if ( get_post_meta( $course->get_id(), '_lp_bbpress_forum_enable', true ) !== 'yes' ) {
+			if ( $courseModel->get_meta_value_by_key( '_lp_bbpress_forum_enable' ) !== 'yes' ) {
 				return;
 			}
-
-			learn_press_get_template(
-				'forum-link.php',
-				array( 'forum_id' => $forum_id ),
-				learn_press_template_path() . '/addons/bbpress/',
-				LP_ADDON_BBPRESS_TEMPLATE
-			);
+			$forum = get_post( $forum_id );
+			if ( empty( $forum ) || get_post_status( $forum_id ) !== 'publish' ) {
+				return;
+			}
+			$content = LPbbPressTemplate::instance()->render_forum_html( (int) $forum_id );
+			wp_enqueue_style( 'learnpress-bbpress-forum' );
+			echo $content;
 		}
 
 		/**
@@ -230,7 +255,7 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		 *
 		 * @return bool
 		 */
-		private function can_access_forum( $id, $type ) {
+		public function can_access_forum( $id, $type ) {
 			// invalid forum
 			if ( ! $id ) {
 				return false;
@@ -252,7 +277,7 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 			$forum = get_post( $forum_id );
 
 			// restrict access bases on ancestor forums
-			$ancestor_forums = $forum->ancestors;
+			$ancestor_forums = get_post_ancestors( $forum );
 
 			if ( $ancestor_forums ) {
 				foreach ( $ancestor_forums as $ancestor_forum_id ) {
@@ -260,7 +285,6 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 						return false;
 					}
 				}
-				$can_access = true;
 			}
 
 			$can_access = $this->_restrict_access( $forum_id );
@@ -277,22 +301,13 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		 */
 		private function _restrict_access( $forum_id ) {
 			$course_id = learn_press_bbp_get_course( $forum_id );
-
-			// normal publish forum which has no connecting with any courses
-			if ( ! $course_id ) {
-				return true;
+			$course    = CourseModel::find( $course_id, true );
+			if ( ! $course ) {
+				return false;
 			}
-
-			if ( LP_COURSE_CPT !== get_post_type( $course_id ) ) {
-				return;
-			}
-
-			$course = learn_press_get_course( $course_id );
-
-			$required_enroll = $course->is_required_enroll();
 
 			// allow access not require enroll course's forum
-			if ( ! $required_enroll ) {
+			if ( $course->has_no_enroll_requirement() ) {
 				return true;
 			}
 
@@ -300,9 +315,9 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 				return true;
 			}
 
-			$user = learn_press_get_current_user();
-
-			if ( ! $user->get_id() ) {
+			$user_id = get_current_user_id();
+			$user    = UserModel::find( $user_id, true );
+			if ( ! $user ) {
 				return false;
 			}
 
@@ -311,10 +326,13 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 				return true;
 			}
 
+			$userCourseModel = UserCourseModel::find( $user_id, $course_id, true );
+			if ( ! $userCourseModel ) {
+				return false;
+			}
+
 			// restrict user not enroll
-			$user_course_data = $user->get_course_data( $course_id );
-			$status           = $user_course_data ? $user_course_data->get_data( 'status' ) : false;
-			if ( in_array( $status, array( 'enrolled', 'finished' ) ) ) {
+			if ( $userCourseModel->has_enrolled_or_finished() ) {
 				return true;
 			}
 
@@ -329,9 +347,14 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		 * @return bool
 		 */
 		public function is_public_forum( $course_id ) {
-			$restrict = get_post_meta( $course_id, '_lp_bbpress_forum_enrolled_user', true );
+			$course = CourseModel::find( $course_id, true );
+			if ( ! $course ) {
+				return false;
+			}
 
-			if ( is_null( $restrict ) || ( $restrict === false ) || ( $restrict == '' ) || ( $restrict == 'no' ) ) {
+			$restrict = $course->get_meta_value_by_key( '_lp_bbpress_forum_enrolled_user' );
+
+			if ( $restrict !== 'yes' ) {
 				return true;
 			} else {
 				return false;
@@ -371,6 +394,40 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 				</div>
 				<?php
 			}
+		}
+		/**
+		 * get forum options for course
+		 * @param  array       $options
+		 * @param  int|integer $course_id
+		 * @return array       $options
+		 */
+		public function get_forum_options( array $options = [], int $course_id = 0 ): array {
+			global $wpdb;
+			if ( empty( $course_id ) ) {
+				return $options;
+			}
+			$tb_post     = $wpdb->posts;
+			$tb_postmeta = $wpdb->postmeta;
+			$sql         = $wpdb->prepare(
+				"SELECT forum.ID, forum.post_title FROM {$tb_post} AS forum
+					WHERE
+					forum.ID NOT IN (
+					SELECT cm.meta_value FROM {$tb_postmeta} AS cm
+					INNER JOIN {$tb_post} AS c ON cm.post_id = c.ID
+					WHERE c.post_type=%s
+					AND cm.meta_key=%s
+					AND c.post_status=%s
+					AND cm.meta_value IS NOT NULL AND c.ID != %d)
+					AND forum.post_type=%s AND forum.post_status=%s",
+				array( LP_COURSE_CPT, '_lp_course_forum', 'publish', $course_id, 'forum', 'publish' )
+			);
+			$result      = $wpdb->get_results( $sql, ARRAY_A );
+			if ( ! empty( $result ) ) {
+				foreach ( $result as $forum ) {
+					$options[ $forum['ID'] ] = $forum['post_title'];
+				}
+			}
+			return $options;
 		}
 	}
 }
