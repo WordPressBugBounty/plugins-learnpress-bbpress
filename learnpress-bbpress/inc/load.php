@@ -4,10 +4,12 @@
  *
  * @author   ThimPress
  * @package  LearnPress/bbPress/Classes
- * @version  3.0.4
+ * @version  3.0.5
  */
 
 defined( 'ABSPATH' ) || exit;
+
+use LearnPress\Helpers\Template;
 use LearnPress\Models\CourseModel;
 use LearnPress\Models\UserModel;
 use LearnPress\Models\UserItems\UserCourseModel;
@@ -20,6 +22,12 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 	 * @since 3.0.0
 	 */
 	class LP_Addon_bbPress extends LP_Addon {
+		public $text_domain = 'learnpress-bbpress';
+
+		public $version = LP_ADDON_BBPRESS_VER;
+
+		public $require_version = LP_ADDON_BBPRESS_REQUIRE_VER;
+
 		public static $instance = null;
 
 		public static function instance() {
@@ -31,18 +39,12 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		}
 
 		/**
-		 * @var bool
-		 */
-		protected $_start_forum = false;
-
-		/**
 		 * LP_Addon_bbPress constructor.
 		 */
 		public function __construct() {
-			$this->version         = LP_ADDON_BBPRESS_VER;
-			$this->require_version = LP_ADDON_BBPRESS_REQUIRE_VER;
-
 			parent::__construct();
+
+			$this->hooks();
 		}
 
 		/**
@@ -70,15 +72,41 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		/**
 		 * Init hooks.
 		 */
-		protected function _init_hooks() {
+		protected function hooks() {
 			// delete course and delete forum action
 			add_action( 'before_delete_post', array( $this, 'delete_post' ) );
-			add_action( 'bbp_template_before_single_topic', array( $this, 'before_single' ) );
-			add_action( 'bbp_template_before_single_forum', array( $this, 'before_single' ) );
-			add_action( 'bbp_template_after_single_topic', array( $this, 'after_single' ) );
-			add_action( 'bbp_template_after_single_forum', array( $this, 'after_single' ) );
+			//add_action( 'bbp_template_before_single_topic', array( $this, 'before_single' ) );
+			//add_action( 'bbp_template_before_single_forum', array( $this, 'before_single' ) );
+			//add_action( 'bbp_template_after_single_topic', array( $this, 'after_single' ) );
+			//add_action( 'bbp_template_after_single_forum', array( $this, 'after_single' ) );
 			// add_action( 'learn-press/after-single-course', array( $this, 'forum_link' ), 0 );
 			add_action( 'learn-press/course-content-summary', array( $this, 'forum_link' ), 71 );
+			add_filter(
+				'bbp_user_can_view_forum',
+				function ( $retval, $forum_id, $user_id ) {
+					$course_id = (int) learn_press_bbp_get_course( $forum_id );
+					if ( ! $course_id ) {
+						return $retval;
+					}
+
+					$can_access = $this->can_access_forum( $forum_id, 'forum' );
+					if ( ! $can_access ) {
+						wp_enqueue_style( 'learnpress' );
+						Template::print_message(
+							sprintf(
+								__( 'You have to enroll %s to view this forum!', 'learnpress-bbpress' ),
+								sprintf( '<a href="%s">%s</a>', get_the_permalink( $course_id ), get_the_title( $course_id ) )
+							),
+							'warning'
+						);
+						return false;
+					}
+
+					return $retval;
+				},
+				10,
+				3
+			);
 
 			add_filter( 'learnpress/course/metabox/tabs', array( $this, 'add_course_metabox' ), 10, 2 );
 			add_action( 'learnpress/admin/metabox/select/save', array( $this, 'custom_save_metabox_forum' ), 10, 3 );
@@ -300,7 +328,7 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 		 * @return bool
 		 */
 		private function _restrict_access( $forum_id ) {
-			$course_id = learn_press_bbp_get_course( $forum_id );
+			$course_id = (int) learn_press_bbp_get_course( $forum_id );
 			$course    = CourseModel::find( $course_id, true );
 			if ( ! $course ) {
 				return false;

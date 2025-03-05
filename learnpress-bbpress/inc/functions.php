@@ -28,9 +28,9 @@ if ( ! function_exists( 'learn_press_bbp_get_course' ) ) {
 			$query = $wpdb->prepare(
 				"
 				SELECT course.ID FROM {$wpdb->posts} course
-					INNER JOIN {$wpdb->postmeta} course_meta ON course_meta.post_id = course.ID AND course_meta.meta_key = %s AND course_meta.meta_value = %d
-					INNER JOIN {$wpdb->posts} forum ON forum.ID = course_meta.meta_value
-					WHERE forum.ID = %d",
+					INNER JOIN {$wpdb->postmeta} course_meta ON course_meta.post_id = course.ID
+					AND course_meta.meta_key = %s AND course_meta.meta_value = %d
+					INNER JOIN {$wpdb->posts} forum ON forum.ID = %d",
 				'_lp_course_forum',
 				$forum_id,
 				$forum_id

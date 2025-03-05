@@ -2,10 +2,8 @@
 Contributors: thimpress, kendy73, tunnhn, leehld
 Donate link:
 Tags: lms, elearning, e-learning, learning management system, education
-Requires at least: 6.3
-Requires PHP: 7.4
-Tested up to: 6.7.1
-Stable tag: 4.0.4
+Tested up to: 6.7
+Stable tag: 4.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,6 +52,9 @@ Yes, you can. Please find the documentation for writing an add-on for LearnPress
 1. LearnPress bbPress screenshot
 
 == Changelog ==
+
+= 4.0.6 (2025-03-05) =
+~ Fixed: minor bugs.
 
 = 4.0.5 (2025-01-23) =
 ~ Tweak: layout forum on single course.

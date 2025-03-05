@@ -4,13 +4,15 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: Using the forum for courses provided by bbPress.
  * Author: ThimPress
- * Version: 4.0.5
+ * Version: 4.0.6
  * Author URI: http://thimpress.com
  * Tags: learnpress, lms, add-on, bbpress
  * Text Domain: learnpress-bbpress
  * Domain Path: /languages/
  * Require_LP_Version: 4.2.7
  * Require_BBpress_Version: 2.0.0
+ * Requires at least: 6.0
+ * Requires PHP: 7.4
  *
  * @package LearnPress-bbPress-Integration
  */
@@ -75,7 +77,11 @@ class LP_Addon_BbPress_Preload {
 		if ( ! is_plugin_active( 'bbpress/bbpress.php' ) ) {
 			$bbpress_valid = false;
 		} else {
-			$bbpress_info = get_plugin_data( WP_PLUGIN_DIR . '/bbpress/bbpress.php' );
+			$default_headers = array(
+				'Version'    => 'Version',
+				'TextDomain' => 'Text Domain',
+			);
+			$bbpress_info    = get_file_data( WP_PLUGIN_DIR . '/bbpress/bbpress.php', $default_headers, 'plugin' );
 
 			if ( version_compare( self::$addon_info['Require_BBpress_Version'], $bbpress_info['Version'], '>' ) ) {
 				$bbpress_valid = false;
@@ -125,7 +131,7 @@ class LP_Addon_BbPress_Preload {
 				echo wp_kses(
 					sprintf(
 						__(
-							'<strong>BBPress</strong> addon for <strong>LearnPress</strong> requires %s version %s is <strong>activated</strong>.',
+							'<strong>BBPress</strong> addon for <strong>LearnPress</strong> requires %1$s version %2$s is <strong>activated</strong>.',
 							'learnpress-bbpress'
 						),
 						sprintf(
