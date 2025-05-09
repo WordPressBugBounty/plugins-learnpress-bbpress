@@ -2,35 +2,40 @@
 # This file is distributed under the same license as the LearnPress - bbPress Integration plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: LearnPress - bbPress Integration 4.0.6\n"
+"Project-Id-Version: LearnPress - bbPress Integration 4.0.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/learnpress-bbpress\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-03-05T07:52:28+03:00\n"
+"POT-Creation-Date: 2025-05-09T13:53:54+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: learnpress-bbpress\n"
 
 #. Plugin Name of the plugin
+#: learnpress-bbpress.php
 msgid "LearnPress - bbPress Integration"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: learnpress-bbpress.php
 msgid "http://thimpress.com/learnpress"
 msgstr ""
 
 #. Description of the plugin
+#: learnpress-bbpress.php
 msgid "Using the forum for courses provided by bbPress."
 msgstr ""
 
 #. Author of the plugin
+#: learnpress-bbpress.php
 msgid "ThimPress"
 msgstr ""
 
 #. Author URI of the plugin
+#: learnpress-bbpress.php
 msgid "http://thimpress.com"
 msgstr ""
 
@@ -62,43 +67,43 @@ msgstr ""
 msgid "Bbpress Course Forum"
 msgstr ""
 
-#: inc/load.php:97
+#: inc/load.php:99
 msgid "You have to enroll %s to view this forum!"
 msgstr ""
 
-#: inc/load.php:142
+#: inc/load.php:144
 msgid "Create New"
 msgstr ""
 
-#: inc/load.php:157
+#: inc/load.php:159
 msgid "Enable"
 msgstr ""
 
-#: inc/load.php:158
+#: inc/load.php:160
 msgid "Enable bbPress forum for this course."
 msgstr ""
 
-#: inc/load.php:162
+#: inc/load.php:164
 msgid "Course Forum"
 msgstr ""
 
-#: inc/load.php:163
+#: inc/load.php:165
 msgid "Select forum of this course, choose Create New to create new forum for course, uncheck Enable option to disable."
 msgstr ""
 
-#: inc/load.php:172
+#: inc/load.php:174
 msgid "Restrict User"
 msgstr ""
 
-#: inc/load.php:173
+#: inc/load.php:175
 msgid "Only user(s) enrolled course can access this forum."
 msgstr ""
 
-#: inc/load.php:415
+#: inc/load.php:453
 msgid "You have to enroll the respective course!"
 msgstr ""
 
-#: inc/load.php:418
+#: inc/load.php:456
 msgid "Go back to "
 msgstr ""
 

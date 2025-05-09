@@ -81,6 +81,8 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 			//add_action( 'bbp_template_after_single_forum', array( $this, 'after_single' ) );
 			// add_action( 'learn-press/after-single-course', array( $this, 'forum_link' ), 0 );
 			add_action( 'learn-press/course-content-summary', array( $this, 'forum_link' ), 71 );
+			// Show forum after section instructor
+			add_filter( 'learn-press/single-course/modern/section-instructor', array( $this, 'single_course_show_forum' ), 9, 3 );
 			add_filter(
 				'bbp_user_can_view_forum',
 				function ( $retval, $forum_id, $user_id ) {
@@ -273,6 +275,42 @@ if ( ! class_exists( 'LP_Addon_bbPress' ) ) {
 			$content = LPbbPressTemplate::instance()->render_forum_html( (int) $forum_id );
 			wp_enqueue_style( 'learnpress-bbpress-forum' );
 			echo $content;
+		}
+
+		/**
+		 * Show forum in single course page.
+		 *
+		 * @param array $section
+		 * @param CourseModel $courseModel
+		 * @param UserModel|false $userModel
+		 *
+		 * @return array
+		 */
+		public function single_course_show_forum( array $section, CourseModel $courseModel, $userModel ): array {
+			if ( ! $courseModel->get_meta_value_by_key( '_lp_bbpress_forum_enable' ) ) {
+				return $section;
+			}
+
+			$forum_id = (int) $courseModel->get_meta_value_by_key( '_lp_course_forum' );
+			if ( ! $forum_id ) {
+				return $section;
+			}
+
+			$forum = get_post( $forum_id );
+			if ( empty( $forum ) || get_post_status( $forum_id ) !== 'publish' ) {
+				return $section;
+			}
+
+			$html = LPbbPressTemplate::instance()->render_forum_html( $forum_id );
+
+			return apply_filters(
+				'learn-press/addon/bbpress/single-course/position',
+				Template::insert_value_to_position_array( $section, 'after', 'wrapper_end', 'forum', $html ),
+				$html,
+				$section,
+				$courseModel,
+				$userModel
+			);
 		}
 
 		/**

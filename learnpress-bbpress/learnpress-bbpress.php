@@ -4,12 +4,12 @@
  * Plugin URI: http://thimpress.com/learnpress
  * Description: Using the forum for courses provided by bbPress.
  * Author: ThimPress
- * Version: 4.0.6
+ * Version: 4.0.7
  * Author URI: http://thimpress.com
  * Tags: learnpress, lms, add-on, bbpress
  * Text Domain: learnpress-bbpress
  * Domain Path: /languages/
- * Require_LP_Version: 4.2.7
+ * Require_LP_Version: 4.2.8
  * Require_BBpress_Version: 2.0.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
