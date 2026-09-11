@@ -2,7 +2,7 @@
 Contributors: thimpress, kendy73, tunnhn, leehld
 Donate link:
 Tags: lms, elearning, e-learning, learning management system, education
-Tested up to: 6.8
+Tested up to: 7.1
 Stable tag: 4.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
